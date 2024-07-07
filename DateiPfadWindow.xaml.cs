@@ -21,8 +21,7 @@ namespace ReadAndWriteStreams
 	/// </summary>
 	public partial class DateiPfadWindow : Window
 	{
-		
-		public DateiPfadWindow()
+        public DateiPfadWindow()
 		{
 			InitializeComponent();
 		}
@@ -37,15 +36,15 @@ namespace ReadAndWriteStreams
 
 			#region TextBox
 			//wenn Content ungleich null -> set path to content
-			if (this.DateiPfadTextBlock.Text != null)
-			{ 
+			if (this.DateiPfadTextBox.Text != null)
+			{
 				//Prüfen ob Pfad existiert und gelesen werden kann
-				if (System.IO.Path.Exists(this.DateiPfadTextBlock.Text))
+				if (System.IO.Path.Exists(this.DateiPfadTextBox.Text))
 				{
 					//Buffer erzeugen und Inhalt auslesen
-					CreateFSByteBuffer(this.DateiPfadTextBlock.Text, out buffer, out byteCount);
+					CreateFSByteBuffer(this.DateiPfadTextBox.Text, out buffer, out byteCount);
 					//Direcotry holen
-					dirName = System.IO.Path.GetDirectoryName(this.DateiPfadTextBlock.Text)!;
+					dirName = System.IO.Path.GetDirectoryName(this.DateiPfadTextBox.Text)!;
 					//Pfad zur neuen Datei erzeugen
 					path = System.IO.Path.Combine(dirName, fileName);
 					//neue Datei schreiben
@@ -67,7 +66,7 @@ namespace ReadAndWriteStreams
 			#endregion
 
 			////////////////////////////////////////////////////////////////////////
-			
+
 			#region FileDialog
 			OpenFileDialog openFileDialog = new OpenFileDialog();
 			openFileDialog.Filter = "All files (*.*)|*.*"; // Optional: Dateityp-Filter
