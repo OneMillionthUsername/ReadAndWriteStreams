@@ -16,30 +16,64 @@ using System.Windows.Shapes;
 
 namespace ReadAndWriteStreams
 {
-    /// <summary>
-    /// Interaction logic for DateiPfad.xaml
-    /// </summary>
-    public partial class DateiPfadWindow : Window
-    {
-        public DateiPfadWindow()
-        {
+	/// <summary>
+	/// Interaction logic for DateiPfad.xaml
+	/// </summary>
+	public partial class DateiPfadWindow : Window
+	{
+		
+		public DateiPfadWindow()
+		{
 			InitializeComponent();
-        }
+		}
 
-        private void DateiPfadButton_Click(object sender, RoutedEventArgs e)
-        {
-            string path = string.Empty;
-            string dirName = string.Empty;
-            string fileName = "CopyLog.txt";
+		private void DateiPfadButton_Click(object sender, RoutedEventArgs e)
+		{
+			string path = string.Empty;
+			string dirName = string.Empty;
+			string fileName = "CopyFile.txt";
+			byte[] buffer;
+			int byteCount;
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "All files (*.*)|*.*"; // Optional: Dateityp-Filter
+			#region TextBox
+			//wenn Content ungleich null -> set path to content
+			if (this.DateiPfadTextBlock.Text != null)
+			{ 
+				//Prüfen ob Pfad existiert und gelesen werden kann
+				if (System.IO.Path.Exists(this.DateiPfadTextBlock.Text))
+				{
+					//Buffer erzeugen und Inhalt auslesen
+					CreateFSByteBuffer(this.DateiPfadTextBlock.Text, out buffer, out byteCount);
+					//Direcotry holen
+					dirName = System.IO.Path.GetDirectoryName(this.DateiPfadTextBlock.Text)!;
+					//Pfad zur neuen Datei erzeugen
+					path = System.IO.Path.Combine(dirName, fileName);
+					//neue Datei schreiben
+					//wenn readSucces = 0 ist, wurde nichts eingelesen. 
+					if (byteCount > 0)
+					{
+						//zum Schreiben der Datei muss das Byte Array in UTF8 encoded werden.   
+						File.WriteAllText(path, Encoding.UTF8.GetString(buffer));
+						return;
+					}
+					else
+					{
+						MessageBox.Show("Es konnte kein Inhalt gelesen werden.\r\nBitte prüfen Sie ob die Datei" +
+							" leer ist.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+						return;
+					}
+				}
+			}
+			#endregion
 
-            if (openFileDialog.ShowDialog() == true)
+			////////////////////////////////////////////////////////////////////////
+			
+			#region FileDialog
+			OpenFileDialog openFileDialog = new OpenFileDialog();
+			openFileDialog.Filter = "All files (*.*)|*.*"; // Optional: Dateityp-Filter
+
+			if (openFileDialog.ShowDialog() == true)
 			{
-				byte[] buffer;
-				int readSucces;
-
 				// FQ Path der ausgewählten Datei
 				string selectedFilePath = openFileDialog.FileName;
 				//Direcotry holen
@@ -52,10 +86,10 @@ namespace ReadAndWriteStreams
 				//aber ich weiß nicht, ob ich dabei eine Datei erstellen kann.
 
 				//Buffer erzeugen und Inhalt auslesen
-				CreateFSByteBuffer(selectedFilePath, out buffer, out readSucces);
+				CreateFSByteBuffer(selectedFilePath, out buffer, out byteCount);
 
 				//wenn readSucces = 0 ist, wurde nichts eingelesen. 
-				if (readSucces > 0)
+				if (byteCount > 0)
 				{
 					//zum Schreiben der Datei muss das Byte Array in UTF8 encoded werden.   
 					File.WriteAllText(path, Encoding.UTF8.GetString(buffer));
@@ -66,10 +100,11 @@ namespace ReadAndWriteStreams
 						" leer ist.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
 				}
 			}
+			#endregion
 		}
 
 		/// <summary>
-		/// Liest den Pfad einer Datei ein und erzeugt daraus ein Byte-Array, inklusive Anzahl der gelesen Bytes.
+		/// Liest eine Datei ein und erzeugt daraus ein Byte-Array, inklusive Anzahl der gelesen Bytes.
 		/// </summary>
 		/// <param name="path"></param>
 		/// <param name="buffer"></param>

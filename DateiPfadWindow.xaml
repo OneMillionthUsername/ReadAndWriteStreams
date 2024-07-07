@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="DateiPfad" Height="100" Width="800" ResizeMode="NoResize" WindowStyle="ToolWindow">
 	<Grid VerticalAlignment="Center">
-		<TextBox x:Name="DateiPfadTextBlock" 
+		<TextBox x:Name="DateiPfadTextBox" 
 					   TextWrapping="Wrap"
 					   Height="20"
 					   HorizontalAlignment="Left"
