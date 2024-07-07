@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,7 +23,74 @@ namespace ReadAndWriteStreams
     {
         public DateiPfadWindow()
         {
-            InitializeComponent();
+			InitializeComponent();
         }
-    }
+
+        private void DateiPfadButton_Click(object sender, RoutedEventArgs e)
+        {
+            string path = string.Empty;
+            string dirName = string.Empty;
+            string fileName = "CopyLog.txt";
+
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "All files (*.*)|*.*"; // Optional: Dateityp-Filter
+
+            if (openFileDialog.ShowDialog() == true)
+			{
+				byte[] buffer;
+				int readSucces;
+
+				// FQ Path der ausgewählten Datei
+				string selectedFilePath = openFileDialog.FileName;
+				//Direcotry holen
+				dirName = System.IO.Path.GetDirectoryName(selectedFilePath)!;
+
+				//Pfad zur neuen Datei erzeugen
+				path = System.IO.Path.Combine(dirName, fileName);
+
+				//Vielleicht kann ich den Lese und Schriebzugriff in nur einem ReadWrite Stream erledigen
+				//aber ich weiß nicht, ob ich dabei eine Datei erstellen kann.
+
+				//Buffer erzeugen und Inhalt auslesen
+				CreateFSByteBuffer(selectedFilePath, out buffer, out readSucces);
+
+				//wenn readSucces = 0 ist, wurde nichts eingelesen. 
+				if (readSucces > 0)
+				{
+					//zum Schreiben der Datei muss das Byte Array in UTF8 encoded werden.   
+					File.WriteAllText(path, Encoding.UTF8.GetString(buffer));
+				}
+				else
+				{
+					MessageBox.Show("Es konnte kein Inhalt gelesen werden.\r\nBitte prüfen Sie ob die Datei" +
+						" leer ist.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+				}
+			}
+		}
+
+		/// <summary>
+		/// Liest den Pfad einer Datei ein und erzeugt daraus ein Byte-Array, inklusive Anzahl der gelesen Bytes.
+		/// </summary>
+		/// <param name="path"></param>
+		/// <param name="buffer"></param>
+		/// <param name="byteCount"></param>
+		private static void CreateFSByteBuffer(string path, out byte[] buffer, out int byteCount)
+		{
+			//Stream erzeugen
+			FileStream fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.None);
+
+			//zum Einlesen der Datei braucht fs.Read ein leeres byteArray, mit genügend Platz für den Dateiinhalt.
+			//Array Länge ist die Länge des FileStreams.
+			buffer = new byte[fs.Length];
+
+			//Der Lesevorgang beginnt bei der (Zeiger-)Byte-Position 0 an und endet mit der Länge des Buffers
+			//Der Rückgabewert von fs.Read ist die Länge der gelesenen Bytes in int.
+			//wenn fs.Read > 0 zurückgibt, dann wurden alle Bytes ordnungsgemäß gelesen.
+			//wenn 0 zurückgegeben wird, wurde nichts eingelesen. 
+			byteCount = fs.Read(buffer, 0, buffer.Length);
+
+			//Stream schließen
+			fs.Close();
+		}
+	}
 }

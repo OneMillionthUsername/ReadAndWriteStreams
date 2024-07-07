@@ -7,14 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 	<Grid>
+		<Menu VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="20">
+			<MenuItem Header="_File">
+				<MenuItem Header="_Read" Name="ReadMenuItem" Click="MenuItem_Click"/>
+				<MenuItem Header="_Write" Name="WriteMenuItem" Click="MenuItem_Click"/>
+			</MenuItem>
+		</Menu>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
 		</Grid.ColumnDefinitions>
-		<Menu VerticalAlignment="Top">
-			<MenuItem Header="_File">
-				<MenuItem Header="_Read" Name="ReadMenuItem" Click="MenuItem_Click"></MenuItem>
-				<MenuItem Header="_Write" Name="WriteMenuItem" Click="MenuItem_Click"></MenuItem>
-			</MenuItem>
-		</Menu>
 	</Grid>
 </Window>

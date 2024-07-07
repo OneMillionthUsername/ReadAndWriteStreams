@@ -9,7 +9,6 @@
 	<Grid VerticalAlignment="Center">
 		<TextBox x:Name="DateiPfadTextBlock" 
 					   TextWrapping="Wrap"
-					   Text="Dateipfad"
 					   Height="20"
 					   HorizontalAlignment="Left"
 					   VerticalAlignment="Stretch"
@@ -17,6 +16,6 @@
 					   BorderBrush="Black"
 					   BorderThickness="0.5" Margin="50,0,0,0" Width="600"
 					   />
-		<Button x:Name="DateiPfadButton" Content="Suche" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,50,0"/>
+		<Button x:Name="DateiPfadButton" Click="DateiPfadButton_Click" Content="Suche" HorizontalAlignment="Right" VerticalAlignment="Center" Width="50" Height="20" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Margin="0,0,50,0"/>
 	</Grid>
 </Window>
